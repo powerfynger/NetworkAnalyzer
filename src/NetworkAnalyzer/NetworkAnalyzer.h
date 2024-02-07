@@ -3,6 +3,7 @@
 
 #include <iostream>
 #include <vector>
+#include <fstream>
 
 
 class Flow
@@ -16,6 +17,8 @@ public:
     std::string getDstIP();
     int getSrcPort();
     int getDstPort();
+    int getPacketCount();
+    int getByteCount();
 
 private:
     std::string _srcIP;
@@ -29,18 +32,22 @@ private:
 class FlowSaver
 {
 public:
+    FlowSaver(std::string fileName) : _fileName(fileName) {}
     void writeFlowToCSV(Flow fl);
+    void writeCSVHeader();
 private:
-
+    std::ofstream _csvFile;
+    std::string _fileName;
 };
 
 class PacketAnalyzer
 {
 public:
+    PacketAnalyzer(FlowSaver flSaver) : _flSaver(flSaver) {}
     void analyzePacket();
     void saveFlows();
 private:
-    FlowSaver _flSaver;
+    FlowSaver& _flSaver;
     std::vector<Flow> _flows;
 };
 

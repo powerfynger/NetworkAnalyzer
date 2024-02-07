@@ -4,7 +4,11 @@
 #include <iostream>
 #include <vector>
 #include <fstream>
-
+#include <pcap.h>
+#include <netinet/if_ether.h>
+#include <netinet/ip.h>
+#include <netinet/tcp.h>
+#include <netinet/udp.h>
 
 class Flow
 {
@@ -15,10 +19,12 @@ public:
     void addPacketToFlow(int size);
     std::string getSrcIP();
     std::string getDstIP();
-    int getSrcPort();
-    int getDstPort();
-    int getPacketCount();
-    int getByteCount();
+    const int getSrcPort();
+    const int getDstPort();
+    const int getPacketCount();
+    const int getByteCount();
+
+    bool operator==(Flow& other) const;
 
 private:
     std::string _srcIP;
@@ -44,7 +50,7 @@ class PacketAnalyzer
 {
 public:
     PacketAnalyzer(FlowSaver flSaver) : _flSaver(flSaver) {}
-    void analyzePacket();
+    void analyzePacket(const u_char *packet, int packSize);
     void saveFlows();
 private:
     FlowSaver& _flSaver;

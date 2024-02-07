@@ -49,7 +49,7 @@ private:
 class PacketAnalyzer
 {
 public:
-    PacketAnalyzer(FlowSaver flSaver) : _flSaver(flSaver) {}
+    PacketAnalyzer(FlowSaver& flSaver) : _flSaver(flSaver) {}
     void analyzePacket(const u_char *packet, int packSize);
     void saveFlows();
 private:

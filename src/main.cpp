@@ -1,25 +1,32 @@
+#include <unistd.h>
 #include "NetworkAnalyzer/NetworkAnalyzer.h"
 
-int main()
+int main(int argc, char *argv[])
 {
-    FlowSaver flSaver("test.csv");
-    PacketAnalyzer pckAnalyzer(flSaver);
-    pcap_t *handle;
-    char errbuf[PCAP_ERRBUF_SIZE];
-    struct pcap_pkthdr header;
-    const u_char *packet;
-    char *dev;
+    int opt;
+    std::string _inputFileName;;
+    std::string _saverFileName = "test.csv";
 
-    dev = pcap_lookupdev(errbuf);
-    handle = pcap_open_live(dev, BUFSIZ, 1, 1000, errbuf);
-
-    for (int i = 0; i < 10; i++)
+    while ((opt = getopt(argc, argv, "o:r:")) != -1)
     {
-        packet = pcap_next(handle, &header);
-        pckAnalyzer.analyzePacket(packet, header.len);
-
+        switch (opt)
+        {
+        case 'o':
+            _saverFileName = optarg;
+            break;
+        case 'r':
+            _inputFileName = optarg;
+            break;
+        default:
+            std::cerr << "Usage: " << argv[0] << " -o <output file name .csv> -r <input file name .pcap>\n";
+            return 1;
+        }
     }
-    pckAnalyzer.saveFlows();
 
+    FlowSaver flSaver(_saverFileName);
+    PacketAnalyzer pckgAnalyzer(flSaver);
+    if (_inputFileName.length() == 0) pckgAnalyzer.analyzePacketsLive();
+    else pckgAnalyzer.analyzePacketsFromFile(_inputFileName);
+    pckgAnalyzer.saveFlows();
     return 0;
 }

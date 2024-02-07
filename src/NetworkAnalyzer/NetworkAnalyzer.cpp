@@ -35,7 +35,7 @@ const int Flow::getByteCount()
     return _byteCount;
 }
 
-bool Flow::operator==(Flow& other) const
+bool Flow::operator==(Flow &other) const
 {
     return (this->_dstIP == other.getDstIP() && this->_dstPort == other.getDstPort() && this->_srcIP == other.getSrcIP() && this->_srcPort == other.getSrcPort());
 }
@@ -97,5 +97,43 @@ void PacketAnalyzer::analyzePacket(const u_char *packet, int packSize)
         }
     }
     _flows.push_back(tmp);
+}
 
+void PacketAnalyzer::analyzePacketsFromFile(std::string fileName)
+{
+    char errbuf[PCAP_ERRBUF_SIZE];
+    pcap_t *handle;
+    struct pcap_pkthdr header;
+
+    handle = pcap_open_offline(fileName.c_str(), errbuf);
+    if (handle == NULL)
+    {
+        std::cout << "Could not open " << fileName << " file\n";
+        return;
+    }
+
+    const u_char *packet;
+    while ((packet = pcap_next(handle, &header)) != NULL)
+    {
+        analyzePacket(packet, header.len);
+    }
+
+    pcap_close(handle);
+}
+void PacketAnalyzer::analyzePacketsLive()
+{
+    pcap_t *handle;
+    char errbuf[PCAP_ERRBUF_SIZE];
+    struct pcap_pkthdr header;
+    const u_char *packet;
+    char *dev;
+
+    dev = pcap_lookupdev(errbuf);
+    handle = pcap_open_live(dev, BUFSIZ, 1, 1000, errbuf);
+
+    while(true)
+    {
+        packet = pcap_next(handle, &header);
+        analyzePacket(packet, header.len);
+    }
 }

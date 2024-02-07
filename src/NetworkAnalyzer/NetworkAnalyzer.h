@@ -50,6 +50,8 @@ class PacketAnalyzer
 {
 public:
     PacketAnalyzer(FlowSaver& flSaver) : _flSaver(flSaver) {}
+    void analyzePacketsFromFile(std::string fileName);
+    void analyzePacketsLive();
     void analyzePacket(const u_char *packet, int packSize);
     void saveFlows();
 private:

@@ -1,4 +1,5 @@
 #include <unistd.h>
+#include <cstdlib>
 #include "NetworkAnalyzer/NetworkAnalyzer.h"
 
 int main(int argc, char *argv[])
@@ -28,5 +29,7 @@ int main(int argc, char *argv[])
     if (_inputFileName.length() == 0) pckgAnalyzer.analyzePacketsLive();
     else pckgAnalyzer.analyzePacketsFromFile(_inputFileName);
     pckgAnalyzer.saveFlows();
+    
+    std::system("python3 main_analyzer.py");
     return 0;
 }

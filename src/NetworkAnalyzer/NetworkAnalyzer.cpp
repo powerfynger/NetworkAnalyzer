@@ -42,16 +42,26 @@ bool Flow::operator==(Flow &other) const
 
 void FlowSaver::writeCSVHeader()
 {
-    if (!_csvFile.is_open())
-        _csvFile.open(_fileName);
-    _csvFile << "Source IP,Source Port,Destination IP,Destination Port,Packet Count,Byte Count\n";
+    if (!_csvFileDescr.is_open())
+        _csvFileDescr.open(_fileName);
+    _csvFileDescr << "Source IP,Source Port,Destination IP,Destination Port,Packet Count,Byte Count\n";
 }
 
+void FlowSaver::closeAllDescriptors()
+{
+    _csvFileDescr.close();
+}
+
+FlowSaver::~FlowSaver()
+{
+    _csvFileDescr.close();
+
+}
 void FlowSaver::writeFlowToCSV(Flow fl)
 {
-    if (!_csvFile.is_open())
-        _csvFile.open(_fileName);
-    _csvFile << fl.getSrcIP() << "," << fl.getSrcPort() << "," << fl.getDstIP() << "," << fl.getDstPort() << "," << fl.getPacketCount() << "," << fl.getByteCount() << "\n";
+    // if (!_csvFile.is_open())
+        // _csvFile.open(_fileName);
+    _csvFileDescr << fl.getSrcIP() << "," << fl.getSrcPort() << "," << fl.getDstIP() << "," << fl.getDstPort() << "," << fl.getPacketCount() << "," << fl.getByteCount() << "\n";
 }
 
 void PacketAnalyzer::saveFlows()

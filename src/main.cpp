@@ -26,10 +26,14 @@ int main(int argc, char *argv[])
 
     FlowSaver flSaver(_saverFileName);
     PacketAnalyzer pckgAnalyzer(flSaver);
+    
     if (_inputFileName.length() == 0) pckgAnalyzer.analyzePacketsLive();
     else pckgAnalyzer.analyzePacketsFromFile(_inputFileName);
     pckgAnalyzer.saveFlows();
-    
-    std::system("python3 main_analyzer.py");
+    flSaver.closeAllDescriptors();
+
+    std::string com("python3 main_analyzer.py ");
+    com += _saverFileName;
+    std::system(com.c_str());
     return 0;
 }

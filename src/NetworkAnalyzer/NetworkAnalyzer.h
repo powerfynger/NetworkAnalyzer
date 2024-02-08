@@ -41,8 +41,11 @@ public:
     FlowSaver(std::string fileName) : _fileName(fileName) {}
     void writeFlowToCSV(Flow fl);
     void writeCSVHeader();
+
+    void closeAllDescriptors();
+    ~FlowSaver();
 private:
-    std::ofstream _csvFile;
+    std::ofstream _csvFileDescr;
     std::string _fileName;
 };
 

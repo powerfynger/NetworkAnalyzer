@@ -138,7 +138,7 @@ void PacketAnalyzer::analyzePacketsFromFile(std::string fileName)
 
     pcap_close(handle);
 }
-void PacketAnalyzer::analyzePacketsLive()
+void PacketAnalyzer::analyzePacketsLive(int numberPacketsToScan)
 {
     pcap_t *handle;
     char errbuf[PCAP_ERRBUF_SIZE];
@@ -147,11 +147,25 @@ void PacketAnalyzer::analyzePacketsLive()
     char *dev;
 
     dev = pcap_lookupdev(errbuf);
+    if (dev == NULL)
+    {
+        std::cout << "Network device not found\n";
+        exit(EXIT_FAILURE);
+    }
+
     handle = pcap_open_live(dev, BUFSIZ, 1, 1000, errbuf);
 
-    while(true)
+    if(handle == NULL)
+    {
+        std::cout << "Error openning network device\n";
+        exit(EXIT_FAILURE);
+    }
+
+    int packetsRecv = 0;
+    while(packetsRecv < numberPacketsToScan || numberPacketsToScan == -1)
     {
         packet = pcap_next(handle, &header);
         analyzePacket(packet, header.len);
+        packetsRecv++;
     }
 }

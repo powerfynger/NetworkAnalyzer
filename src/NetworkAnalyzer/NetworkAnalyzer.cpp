@@ -2,6 +2,7 @@
 
 void Flow::addPacketToFlow(int size)
 {
+
     _byteCount += size;
     _packetCount += 1;
 }
@@ -23,7 +24,7 @@ const int Flow::getSrcPort()
 
 const int Flow::getDstPort()
 {
-    return _srcPort;
+    return _dstPort;
 }
 
 const int Flow::getPacketCount()
@@ -37,7 +38,12 @@ const int Flow::getByteCount()
 
 bool Flow::operator==(Flow &other) const
 {
-    return (this->_dstIP == other.getDstIP() && this->_dstPort == other.getDstPort() && this->_srcIP == other.getSrcIP() && this->_srcPort == other.getSrcPort());
+    return(
+        (this->_dstIP == other.getDstIP()) && 
+        (this->_dstPort == other.getDstPort()) && 
+        (this->_srcIP == other.getSrcIP()) && 
+        (this->_srcPort == other.getSrcPort())
+        );
 }
 
 void FlowSaver::writeCSVHeader()
@@ -75,6 +81,7 @@ void PacketAnalyzer::saveFlows()
 
 void PacketAnalyzer::analyzePacket(const u_char *packet, int packSize)
 {
+
     struct ether_header *ethHeader = (struct ether_header *)packet;
     if (ntohs(ethHeader->ether_type) != ETHERTYPE_IP)
     {
@@ -98,6 +105,7 @@ void PacketAnalyzer::analyzePacket(const u_char *packet, int packSize)
     inet_ntop(AF_INET, &(ipHeader->ip_dst), dstIP, INET_ADDRSTRLEN);
 
     Flow tmp(srcIP, dstIP, srcPort, dstPort);
+    tmp.addPacketToFlow(packSize);
     for (auto &fl : _flows)
     {
         if (fl == tmp)

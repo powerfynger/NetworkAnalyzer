@@ -26,7 +26,6 @@ int main(int argc, char *argv[])
 
     FlowSaver flSaver(_saverFileName);
     PacketAnalyzer pckgAnalyzer(flSaver);
-    
     if (_inputFileName.length() == 0) pckgAnalyzer.analyzePacketsLive();
     else pckgAnalyzer.analyzePacketsFromFile(_inputFileName);
     pckgAnalyzer.saveFlows();

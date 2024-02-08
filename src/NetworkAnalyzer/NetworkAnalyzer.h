@@ -14,7 +14,7 @@ class Flow
 {
 public:
     Flow(std::string srcIP, std::string dstIP, int srcPort, int dstPort) : 
-    _srcIP(srcIP), _dstIP(dstIP), _srcPort(srcPort), _dstPort(dstPort), _packetCount(1), _byteCount(0) {}
+    _srcIP(srcIP), _dstIP(dstIP), _srcPort(srcPort), _dstPort(dstPort), _packetCount(0), _byteCount(0) {}
     
     void addPacketToFlow(int size);
     std::string getSrcIP();

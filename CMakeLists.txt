@@ -11,6 +11,8 @@ find_package(PCAP REQUIRED)
 
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -lpcap")
 
+configure_file(${CMAKE_CURRENT_SOURCE_DIR}/main_analyzer.py ${CMAKE_CURRENT_BINARY_DIR}/main_analyzer.py COPYONLY)
+
 
 add_executable(NetworkAnalayzer
     src/main.cpp
